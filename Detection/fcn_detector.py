@@ -25,10 +25,16 @@ class FcnDetector(object):
             self.cls_prob, self.bbox_pred, _ = net_factory(image_reshape, training=False)
             
             #allow 
-            self.sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, gpu_options=tf.GPUOptions(allow_growth=True)))
+            #CPU
+            self.sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, 
+                                                         gpu_options=tf.GPUOptions(allow_growth=True),
+                                                         device_count={'GPU':0}))
+            ##GPU
+            #self.sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, gpu_options=tf.GPUOptions(allow_growth=True),device_count={'GPU',1}))
             saver = tf.train.Saver()
             #check whether the dictionary is valid
             model_dict = '/'.join(model_path.split('/')[:-1])
+           
             ckpt = tf.train.get_checkpoint_state(model_dict)
             print model_path
             readstate = ckpt and ckpt.model_checkpoint_path
