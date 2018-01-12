@@ -12,9 +12,13 @@ class Detector(object):
             self.image_op = tf.placeholder(tf.float32, shape=[batch_size, data_size, data_size, 3], name='input_image')
             #figure out landmark            
             self.cls_prob, self.bbox_pred, self.landmark_pred = net_factory(self.image_op, training=False)
+            #cpu
             self.sess = tf.Session(
-                config=tf.ConfigProto(allow_soft_placement=True, gpu_options=tf.GPUOptions(allow_growth=True)))
+                config=tf.ConfigProto(allow_soft_placement=True, gpu_options=tf.GPUOptions(allow_growth=True),device_count={'GPU':0}))
             saver = tf.train.Saver()
+            ##gpu
+            #self.sess = tf.Session(
+            #    config=tf.ConfigProto(log_device_placement=True,allow_soft_placement=True, gpu_options=tf.GPUOptions(allow_growth=True),device_count={'GPU':1}))
             #check whether the dictionary is valid
             model_dict = '/'.join(model_path.split('/')[:-1])
             ckpt = tf.train.get_checkpoint_state(model_dict)
